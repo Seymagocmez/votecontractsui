@@ -1,58 +1,38 @@
-# SuiVotesContract Move Module
+# Voting Module
 
-## Overview
+This Move module implements a basic voting system with the following features:
 
-This Move module implements the Instant Runoff Voting (IRV) algorithm for a voting system. The module provides structures and functions for managing proposals, voters, and conducting IRV-based elections.
+- Starting and stopping voting sessions.
+- Adding votes to the system.
+- Removing the last vote from the system.
+- Retrieving the receiver of the last vote.
 
-## Contents
+## Smart Contracts
 
-- [Voting Module](#voting-module)
-  - [Proposal Struct](#proposal-struct)
-  - [IRVResult Struct](#irvresult-struct)
-  - [Voting Struct](#voting-struct)
-  - [run_irv Function](#run_irv-function)
+### Vote Struct
+- `Vote`: Represents a vote with a designated receiver.
 
-## Voting Module
+### VotingContract Struct
+- `VotingContract`: Manages the voting process and holds a vector of `SignerVote`.
 
-The `Voting` module contains structures and functions related to the voting system.
+### SignerVote Struct
+- `SignerVote`: Combines a signer with a `Vote`, representing a vote cast by a signer.
 
-### Proposal Struct
+## Events
 
-The `Proposal` struct represents a proposal in the voting system and includes an `id` and a `name` (vector of bytes).
+- `AddVoteEvent`: Triggered when a new vote is added.
+- `RemoveVoteEvent`: Triggered when the last vote is removed.
+- `StartVotingEvent`: Triggered when a voting session is started.
+- `StopVotingEvent`: Triggered when a voting session is stopped.
 
-### IRVResult Struct
+## Public Functions
 
-The `IRVResult` struct holds the result of an IRV election, including the winner and the rounds of the election.
+- `startVoting(account: &signer)`: Starts a new voting session.
+- `stopVoting(account: &signer)`: Stops the current voting session.
+- `addVote(account: &signer, receiver: address)`: Adds a new vote to the system.
+- `removeVote(account: &signer)`: Removes the last vote from the system.
+- `getVotes(account: &signer, voterAddress: address): address`: Retrieves the receiver of the last vote.
 
-### Voting Struct
+## License
 
-The `Voting` struct manages the state of the voting system, including the list of proposals, voters, and votes.
-
-### run_irv Function
-
-The `run_irv` function conducts an Instant Runoff Voting election using the provided voting data. It iteratively eliminates proposals with the fewest votes until a winner is determined.
-
-## Usage
-
-To use this Move module, follow these steps:
-
-1. Deploy the Move module to your blockchain.
-2. Create instances of the `Voting` struct for your specific election.
-3. Call the `run_irv` function to conduct the IRV election and obtain the result.
-
-Example code snippet:
-
-```move
-// Instantiate the Voting struct with your proposals, voters, and votes
-public 0x1::Voting::Voting<Proposal, AccountAddress> myElection = 0x1::Voting::Voting<Proposal, AccountAddress> {
-  proposals: /* your vector of Proposal */,
-  voters: /* your set of AccountAddress */,
-  votes: /* your vector of votes */,
-};
-
-// Run the IRV election
-let result = 0x1::Voting::run_irv(&mut myElection);
-
-// Access the result, including the winner and rounds
-let winner = result.winner;
-let rounds = result.rounds;
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
